@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import plotly.express as px
 
 def cuisine_page():
     df = pd.read_csv("data/clustered_cuisines.csv").drop("Unnamed: 0", axis=1)
@@ -48,4 +49,13 @@ def cuisine_page():
                                                                                 ascending=False)
         [["completed_orders_ofo_state"]].head(10).reset_index()
     .rename(columns={"name":"Product Sold", "completed_orders_ofo_state":"Completed Orders"}))
-    st.table(top_items_cui)
+    #st.table(top_items_cui)
+    fig = px.bar(top_items_cui, x="Product Sold", y="Completed Orders", title="Number of Orders by Food")
+    fig.update_traces(marker_color='darkred')
+    fig.update_layout(
+        title={
+            'y':0.9,
+            'x':0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'})
+    st.plotly_chart(fig)
