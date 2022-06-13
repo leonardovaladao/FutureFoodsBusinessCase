@@ -1,16 +1,21 @@
 import streamlit as st
 import pandas as pd
 from datetime import timedelta
+import plotly.express as px
+
+
 def trending_page():
     df = pd.read_csv("data/clustered_cuisines.csv").drop("Unnamed: 0", axis=1)
     st.title("Trending Products")
     st.write("See below which of your products have been trending.")
     # ================ Top Products Table ================ #
     st.header("Top Products Sold")
-    st.table(df.sort_values("completed_orders_ofo_state", ascending=False)[["name", "completed_orders_ofo_state"]]
-                .head(10).reset_index().drop("index",axis=1)
-                .rename(columns={"name": "Product sold", "completed_orders_ofo_state": "Completed Orders"}))
+    top_prod_sol = (df.sort_values("completed_orders_ofo_state", ascending=False)[["name", "completed_orders_ofo_state"]]
+                    .head(30).reset_index().drop("index",axis=1)
+                    .rename(columns={"name": "Product Sold", "completed_orders_ofo_state": "Completed Orders"}))
+    st.table(top_prod_sol)
 
+    
     # ================ Trending Items ================ #
 
     st.header("Items trending recently:")

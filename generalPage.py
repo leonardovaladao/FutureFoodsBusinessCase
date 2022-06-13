@@ -28,18 +28,18 @@ def general_page():
     st.write("See general information about your restaurant.")
     
     # ================ General Metrics ================ #
-    n1, total_orders, accepted_orders, issues, completed_orders, n2  = st.columns(6)
+    n1, total_orders, accepted_orders, completed_orders, issues, n2  = st.columns(6)
     total_orders.metric(label="# of total orders", value=metric_show(df["requested_orders"].sum()), delta=show_delta("requested_orders", 3))
     issues.metric(label="# of issues in orders", value=metric_show(df["order_issues"].sum()), delta=show_delta("order_issues"), delta_color="inverse")
     accepted_orders.metric(label="# of accepted orders", value=metric_show(df["accepted_orders"].sum()), delta=show_delta("accepted_orders", 3))
     completed_orders.metric(label="# of completed orders", value=metric_show(df["completed_orders_ofo_state"].sum()), delta=show_delta("completed_orders_ofo_state", 3))
     
 
-    n1, per_accepted, per_first, per_first_promo, returning, n2 = st.columns(6)
+    n1, per_accepted, per_completed, returning, per_first, n2 = st.columns(6)
     per_accepted.metric(label="% of accepted orders", value=perc_show(df["accepted_orders"].sum()/df["requested_orders"].sum()))
     per_first.metric(label="% of first orders", value=perc_show(df["first_time_orders"].sum()/df["requested_orders"].sum()))
-    per_first_promo.metric(label="% of first orders w/ promo", value=perc_show((df["first_time_orders_promo"].sum()/df["requested_orders"].sum())))
-    returning.metric(label="% of returning orders", value=perc_show(df["returning_orders"].sum()/df["requested_orders"].sum()))
+    per_completed.metric(label="% of completed orders", value=perc_show((df["completed_orders_ofo_state"].sum()/df["requested_orders"].sum())))
+    returning.metric(label="% of returned orders", value=perc_show(df["returning_orders"].sum()/df["requested_orders"].sum()))
 
     n1, prep_time, rating, n2 = st.columns(4)
     prep_time.metric(label="Avg. Prep. Time", value=str(str(round(df["avg_prep_time"].mean()/60)))+" min.", delta=show_delta("avg_prep_time"), delta_color="inverse")
