@@ -4,6 +4,9 @@ import numpy as np
 import plotly.express as px
 
 def cuisine_page():
+    def perc_show(n):
+        return( str(str(round(n, 2))+"%") )
+
     df = pd.read_csv("data/clustered_cuisines.csv").drop("Unnamed: 0", axis=1)
     st.title("Cuisines Analysis")
     st.write("Using an Artificial Intelligence solution, we have been able to group your different products by cuisine. Below you can see how your products are trending based on these cuisine types.")
@@ -33,16 +36,24 @@ def cuisine_page():
     trending_cuisines["Avg. Rating"] = df.groupby("Cuisine").mean().reset_index()["avg_rating"]
     st.table(trending_cuisines)
 
+    
+
     st.header("Analysis by cuisine")
 
     cuisine = st.selectbox("Select cuisine to see analysis:", ['Accompaniment', 'Breakfast', 'Chicken', 'Drinks', 'Italian',
        'Meat', 'Mexican', 'Ramen', 'Salad', 'Sandwich', 'Snacks',
        'Vegetarian'])
 
+    cui_rating = trending_cuisines.set_index("Cuisine")["Avg. Rating"][cuisine]
+    cui_orders = df[df["Cuisine"]==cuisine]["completed_orders_ofo_state"].sum()
+    total_cui = trending_cuisines["Completed Orders"].sum()
+
     items, orders, stars = st.columns(3)
-    items.metric(label="% of representation among all products", value=round(len(df[df["Cuisine"]==cuisine].groupby("name")) / len(df.groupby("name"))*100))
-    orders.metric(label="# of total orders", value=df[df["Cuisine"]==cuisine]["completed_orders_ofo_state"].sum())
-    stars.metric(label="Avg. Rating of this cuisine", value=round(df[df["Cuisine"]==cuisine]["avg_rating"].mean(),2))
+    items.metric(label="% of representation", value=perc_show((cui_orders/total_cui)*100))
+    orders.metric(label="# of total orders", value=cui_orders)
+    stars.metric(label="Avg. Rating of this cuisine", value=round(cui_rating,2))
+
+    
 
     st.header("Top Products in this Cuisine:")
     top_items_cui = (df[df["Cuisine"]==cuisine].groupby("name").sum().sort_values("completed_orders_ofo_state", 
